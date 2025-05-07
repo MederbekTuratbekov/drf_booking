@@ -22,7 +22,6 @@ class ChoiceCitySerializers(serializers.ModelSerializer):
         model = ChoiceCity
         fields = '__all__'
 
-
 class HotelSerializers(serializers.ModelSerializer):
     class Meta:
         model = Hotel
