@@ -37,7 +37,7 @@ class ApartmentAdmin(TranslationAdmin):
             'screen': ('modeltranslation/css/tabbed_translation_fields.css',),
         }
 
-@admin.register(Reviews, Booking)
+@admin.register(Reviews)
 class OtherAdmin(TranslationAdmin):
     class Media:
         js = (
@@ -53,3 +53,4 @@ admin.site.register(UserProfile)
 admin.site.register(Country)
 admin.site.register(City)
 admin.site.register(ChoiceCity)
+admin.site.register(Booking)

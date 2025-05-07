@@ -1,6 +1,5 @@
-from .models import Hotel, Apartment, Reviews # UserProfile, Country, City, ChoiceCity, HotelImages, ApartmentImages, Booking
+from .models import Hotel, Apartment, Reviews
 from modeltranslation.translator import TranslationOptions, register
-
 
 @register(Hotel)
 class HotelTranslationOptions(TranslationOptions):

@@ -5,42 +5,42 @@ from .serializers import (UserProfileSerializer, CountrySerializers, CitySeriali
                           ApartmentSerializers, ApartmentImagesSerializers, ReviewsSerializers, BookingSerializers)
 
 
-class UserProfileListAPIView(generics.ListAPIVIew):
+class UserProfileListAPIView(generics.ListAPIView):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
 
-class CountryListAPIView(generics.ListAPIVIew):
+class CountryListAPIView(generics.ListAPIView):
     queryset = Country.objects.all()
     serializer_class = CountrySerializers
 
-class CityListAPIView(generics.ListAPIVIew):
+class CityListAPIView(generics.ListAPIView):
     queryset = City.objects.all()
     serializer_class = CitySerializers
 
-class ChoiceCityListAPIView(generics.ListAPIVIew):
+class ChoiceCityListAPIView(generics.ListAPIView):
     queryset = ChoiceCity.objects.all()
     serializer_class = ChoiceCitySerializers
 
-class HotelListAPIView(generics.ListAPIVIew):
+class HotelListAPIView(generics.ListAPIView):
     queryset = Hotel.objects.all()
     serializer_class = HotelSerializers
 
-class HotelImagesListAPIView(generics.ListAPIVIew):
+class HotelImagesListAPIView(generics.ListAPIView):
     queryset = HotelImages.objects.all()
     serializer_class = HotelImagesSerializers
 
-class ApartmentListAPIView(generics.ListAPIVIew):
+class ApartmentListAPIView(generics.ListAPIView):
     queryset = Apartment.objects.all()
     serializer_class = ApartmentSerializers
 
-class ApartmentImagesListAPIView(generics.ListAPIVIew):
+class ApartmentImagesListAPIView(generics.ListAPIView):
     queryset = ApartmentImages.objects.all()
     serializer_class = ApartmentImagesSerializers
 
-class ReviewsListAPIView(generics.ListAPIVIew):
+class ReviewsListAPIView(generics.ListAPIView):
     queryset = Reviews.objects.all()
     serializer_class = ReviewsSerializers
 
-class BookingListAPIView(generics.ListAPIVIew):
+class BookingListAPIView(generics.ListAPIView):
     queryset = Booking.objects.all()
     serializer_class = BookingSerializers
