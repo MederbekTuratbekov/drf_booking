@@ -5,7 +5,7 @@ from .serializers import UserProfileSerializer, ChoiceCitySerializers, HotelSeri
 from  rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework import status, generics
+from rest_framework import status, generics, permissions
 from .filters import ApartmentFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
@@ -65,6 +65,7 @@ class ApartmentListAPIView(generics.ListAPIView):
     # ordering_fields = ['field_name1', 'field_name2']
     # ordering = ['field_name1']
     # search_fields = ['title', 'description']
+    # permissions = [permissions.IsAuthenticated]
 
 class ReviewsListAPIView(generics.ListAPIView):
     queryset = Reviews.objects.all()
