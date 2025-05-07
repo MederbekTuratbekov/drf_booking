@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import (UserProfileListAPIView, CountryListAPIView, CityListAPIView, ChoiceCityListAPIView, HotelListAPIView, HotelImagesListAPIView,
-                    ApartmentListAPIView, ApartmentImagesListAPIView, ReviewsListAPIView, BookingListAPIView)
+from .views import UserProfileListAPIView, ChoiceCityListAPIView, HotelListAPIView, ApartmentListAPIView, ReviewsListAPIView, BookingListAPIView
+                    # CountryListAPIView, CityListAPIView, HotelImagesListAPIView, ApartmentImagesListAPIView
 
 
 urlpatterns = [

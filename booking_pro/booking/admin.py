@@ -5,7 +5,7 @@ from modeltranslation.admin import TranslationAdmin
 
 class HotelImageInline(admin.TabularInline):
     model = HotelImages
-    extra = 1
+    extra = 5
 
 @admin.register(Hotel)
 class HotelAdmin(TranslationAdmin):

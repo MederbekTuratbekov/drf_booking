@@ -1,5 +1,5 @@
-from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator, MaxValueValidator
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -47,8 +47,6 @@ class Hotel(models.Model):
     hotel_name = models.CharField(max_length=100)
     hotel_address = models.CharField(max_length=100, unique=True)
     hotel_description = models.TextField(max_length=500)
-    hotel_price = models.DecimalField(max_digits=7, decimal_places=2)
-    hotel_stars = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
 
     def __str__(self):
         return self.hotel_name
@@ -79,9 +77,6 @@ class Apartment(models.Model):
         ('residence', 'residence')  # Элитные апартаменты с гостиничным сервисом
     )
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE)
-    apartment_owner = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    hotel_name = models.CharField(max_length=100)
-    hotel_address = models.CharField(max_length=100, unique=True)
     apartment_number = models.PositiveSmallIntegerField()
     apartment_type = models.CharField(choices=APARTMENT_TYPE)
     video_file = models.FileField(upload_to='apartment_videos/', null=True, blank=True)
@@ -91,7 +86,7 @@ class Apartment(models.Model):
     apartment_price = models.DecimalField(max_digits=7, decimal_places=2)
 
     def __str__(self):
-        return self.hotel_name
+        return f'{self.apartment_number}'
 
 class ApartmentImages(models.Model):
     apartment = models.ForeignKey(Apartment, on_delete=models.CASCADE)
@@ -116,3 +111,6 @@ class Booking(models.Model):
     apartment_reservation = models.ForeignKey(Apartment, on_delete=models.CASCADE)
     check_in_date = models.DateField()
     check_out_date = models.DateField()
+
+    def __str__(self):
+        return f'{self.user_reservation}'
