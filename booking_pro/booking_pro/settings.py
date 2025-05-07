@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'booking',
     'djangorestframework',
+    "phonenumber_field",
 ]
 
 MIDDLEWARE = [
