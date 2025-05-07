@@ -51,6 +51,15 @@ class Hotel(models.Model):
     def __str__(self):
         return self.hotel_name
 
+    def get_avg_rating(self):
+        rating = self.review_connect_hotel.all()
+        if rating.exists():
+            return round(sum([i.rating_stars for i in rating]) / rating.count(), 1)
+        return 0
+
+    def get_count_review(self):
+        return self.review_connect_hotel.count()
+
 class HotelImages(models.Model):
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE)
     hotel_image = models.ImageField(upload_to='hotel_images/', null=True, blank=True)
@@ -88,6 +97,15 @@ class Apartment(models.Model):
     def __str__(self):
         return f'{self.apartment_number}'
 
+    def get_avg_rating(self):
+        rating = self.review_connect_apartment.all()
+        if rating.exists():
+            return round(sum([i.rating_stars for i in rating]) / rating.count(), 1)
+        return 0
+
+    def get_count_review(self):
+        return self.review_connect_apartment.count()
+
 class ApartmentImages(models.Model):
     apartment = models.ForeignKey(Apartment, on_delete=models.CASCADE)
     apartment_image = models.ImageField(upload_to='apartment_images/', null=True, blank=True)
@@ -97,7 +115,8 @@ class ApartmentImages(models.Model):
 
 class Reviews(models.Model):
     review_author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE)
+    hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='review_connect_hotel', null=True, blank=True)
+    apartment = models.ForeignKey(Apartment, on_delete=models.CASCADE, related_name='review_connect_apartment', null=True, blank=True)
     review_text = models.TextField(max_length=200)
     rating_stars = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 11)])
     created_date = models.DateTimeField(auto_now_add=True)

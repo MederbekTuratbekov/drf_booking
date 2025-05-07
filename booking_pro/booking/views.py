@@ -1,11 +1,10 @@
 from .models import UserProfile, ChoiceCity, Hotel, Apartment, Reviews, Booking
-from .serializers import UserProfileSerializer, ChoiceCitySerializers, HotelSerializers, ApartmentSerializers, \
-    ReviewsSerializers, BookingSerializers, UserSerializer, LoginSerializer
+from .serializers import UserProfileSerializer, ChoiceCitySerializers, HotelSerializers, ApartmentSerializers, ReviewsSerializers, BookingSerializers, UserSerializer, LoginSerializer
 #Country, City, HotelImages, ApartmentImages, CountrySerializers, CitySerializers, HotelImagesSerializers, ApartmentImagesSerializers
 from  rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework import status, generics, permissions
+from rest_framework import status, generics #, permissions
 from .filters import ApartmentFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
@@ -48,16 +47,19 @@ class LogoutView(generics.GenericAPIView):
 class UserProfileListAPIView(generics.ListAPIView):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
+    # permissions = [permissions.IsAdminUser]
 
 class ChoiceCityListAPIView(generics.ListAPIView):
     queryset = ChoiceCity.objects.all()
     serializer_class = ChoiceCitySerializers
+    # permissions = [permissions.AllowAny]
 
 class HotelListAPIView(generics.ListAPIView):
     queryset = Hotel.objects.all()
     serializer_class = HotelSerializers
+    # permissions = [permissions.AllowAny]
 
-class ApartmentListAPIView(generics.ListAPIView):
+class ApartmentListAPIView(generics.RetrieveAPIView):
     queryset = Apartment.objects.all()
     serializer_class = ApartmentSerializers
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
@@ -67,13 +69,15 @@ class ApartmentListAPIView(generics.ListAPIView):
     # search_fields = ['title', 'description']
     # permissions = [permissions.IsAuthenticated]
 
-class ReviewsListAPIView(generics.ListAPIView):
+class ReviewsListAPIView(generics.CreateAPIView):
     queryset = Reviews.objects.all()
     serializer_class = ReviewsSerializers
+    # permissions = [permissions.IsAuthenticated]
 
-class BookingListAPIView(generics.ListAPIView):
+class BookingListAPIView(generics.CreateAPIView):
     queryset = Booking.objects.all()
     serializer_class = BookingSerializers
+    # permissions = [permissions.IsAuthenticated]
 
 # class CountryListAPIView(generics.ListAPIView):
 #     queryset = Country.objects.all()
