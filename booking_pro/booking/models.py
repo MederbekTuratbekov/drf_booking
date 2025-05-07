@@ -5,12 +5,13 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 
 class UserProfile(AbstractUser):
-    user_image = models.ImageField()
-    user_age = models.PositiveSmallIntegerField(validators=[MinValueValidator(18), MaxValueValidator(100)])
+    user_image = models.ImageField(null=True, blank=True)
+    user_age = models.PositiveSmallIntegerField(validators=[MinValueValidator(18), MaxValueValidator(100)], null=True, blank=True)
     user_phone_number = PhoneNumberField(unique=True)
     account_created_date = models.DateField(auto_now_add=True)
     user_country = models.CharField(max_length=100)
     STATUS_CHOICES = (
+        ('admin', 'admin'),
         ('owner', 'owner'),
         ('guest', 'guest'),
     )
@@ -45,7 +46,7 @@ class Hotel(models.Model):
     hotel_owner = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     hotel_name = models.CharField(max_length=100)
     hotel_address = models.CharField(max_length=100, unique=True)
-    hotel_description = models.TextField(max_length=200)
+    hotel_description = models.TextField(max_length=500)
     hotel_price = models.DecimalField(max_digits=7, decimal_places=2)
     hotel_stars = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
 
@@ -81,7 +82,7 @@ class Apartment(models.Model):
     apartment_owner = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     hotel_name = models.CharField(max_length=100)
     hotel_address = models.CharField(max_length=100, unique=True)
-    apartment_number = models.PositiveSmallIntegerField(max_length=3)
+    apartment_number = models.PositiveSmallIntegerField()
     apartment_type = models.CharField(choices=APARTMENT_TYPE)
     video_file = models.FileField(upload_to='apartment_videos/', null=True, blank=True)
     apartment_description = models.TextField(max_length=500)
