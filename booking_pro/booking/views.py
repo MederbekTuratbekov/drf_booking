@@ -1,12 +1,14 @@
-from rest_framework import viewsets
-from rest_framework import generics
 from .models import UserProfile, ChoiceCity, Hotel, Apartment, Reviews, Booking
-from .serializers import UserProfileSerializer, ChoiceCitySerializers, HotelSerializers, ApartmentSerializers, ReviewsSerializers, BookingSerializers, UserSerializer
-                          #Country, City, HotelImages, ApartmentImages, CountrySerializers, CitySerializers, HotelImagesSerializers, ApartmentImagesSerializers
+from .serializers import UserProfileSerializer, ChoiceCitySerializers, HotelSerializers, ApartmentSerializers, \
+    ReviewsSerializers, BookingSerializers, UserSerializer, LoginSerializer
+#Country, City, HotelImages, ApartmentImages, CountrySerializers, CitySerializers, HotelImagesSerializers, ApartmentImagesSerializers
 from  rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework import status
+from rest_framework import status, generics
+from .filters import ApartmentFilter
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import OrderingFilter, SearchFilter
 
 
 class RegisterView(generics.CreateAPIView):
@@ -58,6 +60,11 @@ class HotelListAPIView(generics.ListAPIView):
 class ApartmentListAPIView(generics.ListAPIView):
     queryset = Apartment.objects.all()
     serializer_class = ApartmentSerializers
+    filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
+    filterset_class = ApartmentFilter
+    # ordering_fields = ['field_name1', 'field_name2']
+    # ordering = ['field_name1']
+    # search_fields = ['title', 'description']
 
 class ReviewsListAPIView(generics.ListAPIView):
     queryset = Reviews.objects.all()

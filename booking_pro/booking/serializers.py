@@ -66,7 +66,8 @@ class HotelSerializers(serializers.ModelSerializer):
 class ApartmentSerializers(serializers.ModelSerializer):
     class Meta:
         model = Apartment
-        fields = '__all__'
+        fields = ['id', 'apartment_number', 'apartment_type', 'video_file', 'apartment_description', 'is_free', 'all_service', 'apartment_price']
+        # 'hotel_name', images, # country name, city name - для фильтра
 
 class ReviewsSerializers(serializers.ModelSerializer):
     class Meta:

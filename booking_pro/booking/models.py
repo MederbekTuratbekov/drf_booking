@@ -76,7 +76,7 @@ class Apartment(models.Model):
         ('townhouse', 'townhouse'),  # Жилье с отдельным входом, как небольшой дом
         ('residence', 'residence')  # Элитные апартаменты с гостиничным сервисом
     )
-    hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE)
+    hotel_name = models.ForeignKey(Hotel, on_delete=models.CASCADE)
     apartment_number = models.PositiveSmallIntegerField()
     apartment_type = models.CharField(choices=APARTMENT_TYPE)
     video_file = models.FileField(upload_to='apartment_videos/', null=True, blank=True)
