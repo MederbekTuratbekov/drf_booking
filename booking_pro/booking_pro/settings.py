@@ -80,7 +80,7 @@ TIME_ZONE = 'Asia/Bishkek'
 
 USE_TZ = True
 
-LANGUAGE_CODE = 'en' # язык интерфейса
+LANGUAGE_CODE = 'en'
 USE_I18N = True
 USE_L10N = True
 LANGUAGES = [
@@ -92,5 +92,8 @@ LANGUAGES = [
 MODELTRANSLATION_DEFAULT_LANGUAGE = 'ru'
 
 STATIC_URL = 'static/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
