@@ -1,7 +1,7 @@
 from django.urls import path, include
 from .views import UserProfileListAPIView, ChoiceCityListAPIView, HotelListAPIView, ApartmentListAPIView, ReviewsListAPIView, BookingListAPIView
                     # CountryListAPIView, CityListAPIView, HotelImagesListAPIView, ApartmentImagesListAPIView
-from .views import RegisterView, CustomLoginView, LogoutView, ManageHotelViewSet, ManageApartmentViewSet
+from .views import RegisterView, CustomLoginView, LogoutView, ManageHotelViewSet, ManageApartmentViewSet, ReviewsReadAPIView
 
 
 urlpatterns = [
@@ -10,6 +10,7 @@ urlpatterns = [
     path('hotel/', HotelListAPIView.as_view(), name = 'hotels'),
     path('hotel/<int:pk>/', ApartmentListAPIView.as_view(), name = 'apartments'),
     path('review/', ReviewsListAPIView.as_view(), name = 'reviews'),
+    path('review/<int:pk>', ReviewsReadAPIView.as_view(), name = 'read_reviews'),
     path('booking/', BookingListAPIView.as_view(), name = 'bookings'),
     path('manage_hotel/', ManageHotelViewSet.as_view({'get': 'list', 'post': 'create', 'delete': 'destroy', 'patch': 'update'}), name = 'manage_hotels'),
     path('manage_apartment/', ManageApartmentViewSet.as_view({'get': 'list', 'post': 'create', 'delete': 'destroy', 'patch': 'update'}), name = 'manage_apartments'),

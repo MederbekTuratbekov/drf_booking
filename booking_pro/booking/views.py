@@ -1,6 +1,6 @@
 from .models import UserProfile, ChoiceCity, Hotel, Apartment, Reviews, Booking
 from .serializers import (UserProfileSerializer, ChoiceCitySerializers, HotelSerializers, ApartmentSerializers, ReviewsSerializers, BookingSerializers,
-                          UserSerializer, LoginSerializer, ManageHotelSerializers, ManageApartmentSerializers)
+                          UserSerializer, LoginSerializer, ManageHotelSerializers, ManageApartmentSerializers, ReviewsReadSerializers)
 #Country, City, HotelImages, ApartmentImages, CountrySerializers, CitySerializers, HotelImagesSerializers, ApartmentImagesSerializers
 from  rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -79,6 +79,11 @@ class ReviewsListAPIView(generics.CreateAPIView):
     queryset = Reviews.objects.all()
     serializer_class = ReviewsSerializers
     permissions = [permissions.IsAuthenticated]
+
+class ReviewsReadAPIView(generics.RetrieveAPIView):
+    queryset = Reviews.objects.all()
+    serializer_class = ReviewsReadSerializers
+    permissions = [permissions.AllowAny]
 
 class BookingListAPIView(generics.CreateAPIView):
     queryset = Booking.objects.all()

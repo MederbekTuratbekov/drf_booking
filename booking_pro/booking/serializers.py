@@ -64,6 +64,11 @@ class ReviewsSerializers(serializers.ModelSerializer):
         model = Reviews
         fields = ('id', 'review_author', 'hotel', 'review_text', 'rating_stars', 'created_date')
 
+class ReviewsReadSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Reviews
+        fields = ('id', 'review_author', 'hotel', 'review_text', 'rating_stars', 'created_date')
+
 class HotelImagesSerializers(serializers.ModelSerializer):
     class Meta:
         model = HotelImages
