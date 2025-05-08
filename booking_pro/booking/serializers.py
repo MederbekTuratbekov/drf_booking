@@ -57,12 +57,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class ChoiceCitySerializers(serializers.ModelSerializer):
     class Meta:
         model = ChoiceCity
-        fields = ['id', 'image_country', 'country', 'city']
+        fields = ('id', 'image_country', 'country', 'city')
 
 class ReviewsSerializers(serializers.ModelSerializer):
     class Meta:
         model = Reviews
-        fields = ['id', 'review_author', 'hotel', 'review_text', 'rating_stars', 'created_date']
+        fields = ('id', 'review_author', 'hotel', 'review_text', 'rating_stars', 'created_date')
 
 class HotelImagesSerializers(serializers.ModelSerializer):
     class Meta:
@@ -75,7 +75,7 @@ class HotelSerializers(serializers.ModelSerializer):
     hotel_image = HotelImagesSerializers(source='images_connect_hotel', many=True, read_only=True)
     class Meta:
         model = Hotel
-        fields = ['id', 'hotel_name', 'hotel_address', 'hotel_description', 'get_avg_rating', 'get_count_review', 'hotel_image']
+        fields = ('id', 'hotel_name', 'hotel_address', 'hotel_description', 'get_avg_rating', 'get_count_review', 'hotel_image')
 
     def get_avg_rating(self, obj):
         return obj.get_avg_rating()
@@ -94,8 +94,8 @@ class ApartmentSerializers(serializers.ModelSerializer):
     apartment_image = ApartmentImagesSerializers(source='images_connect_apartment', many=True, read_only=True)
     class Meta:
         model = Apartment
-        fields = ['id', 'apartment_number', 'apartment_type', 'video_file', 'apartment_description', 'is_free', 'all_service',
-                  'apartment_price', 'get_avg_rating', 'get_count_review', 'apartment_image']
+        fields = ('id', 'apartment_number', 'apartment_type', 'video_file', 'apartment_description', 'is_free', 'all_service',
+                  'apartment_price', 'get_avg_rating', 'get_count_review', 'apartment_image')
 
     def get_avg_rating(self, obj):
         return obj.get_avg_rating()
@@ -106,17 +106,17 @@ class ApartmentSerializers(serializers.ModelSerializer):
 class BookingSerializers(serializers.ModelSerializer):
     class Meta:
         model = Booking
-        fields = ['id', 'user_reservation', 'hotel_reservation', 'apartment_reservation', 'check_in_date', 'check_out_date']
+        fields = ('id', 'user_reservation', 'hotel_reservation', 'apartment_reservation', 'check_in_date', 'check_out_date')
 
 class ManageHotelSerializers(serializers.ModelSerializer):
     class Meta:
         model = Hotel
-        fields = ['id', 'hotel_name', 'hotel_address', 'hotel_description', 'choice_city', 'hotel_owner']
+        fields = ('id', 'hotel_name', 'hotel_address', 'hotel_description', 'choice_city', 'hotel_owner')
 
 class ManageApartmentSerializers(serializers.ModelSerializer):
     class Meta:
         model = Apartment
-        fields = ['id', 'hotel_name', 'apartment_number', 'apartment_type', 'video_file', 'apartment_description', 'is_free', 'all_service', 'apartment_price']
+        fields = ('id', 'hotel_name', 'apartment_number', 'apartment_type', 'video_file', 'apartment_description', 'is_free', 'all_service', 'apartment_price')
 
 # class CountrySerializers(serializers.ModelSerializer):
 #     class Meta:
