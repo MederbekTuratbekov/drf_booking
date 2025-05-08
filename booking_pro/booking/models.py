@@ -9,7 +9,6 @@ class UserProfile(AbstractUser):
     user_age = models.PositiveSmallIntegerField(validators=[MinValueValidator(18), MaxValueValidator(100)], null=True, blank=True)
     user_phone_number = PhoneNumberField(unique=True)
     account_created_date = models.DateField(auto_now_add=True)
-    user_country = models.CharField(max_length=100)
     STATUS_CHOICES = (
         ('owner', 'owner'),
         ('guest', 'guest'),
@@ -112,6 +111,17 @@ class ApartmentImages(models.Model):
     def __str__(self):
         return f'{self.apartment}'
 
+# class Reviews(models.Model):
+#     review_author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+#     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='review_connect_hotel', null=True, blank=True)
+#     apartment = models.ForeignKey(Apartment, on_delete=models.CASCADE, related_name='review_connect_apartment', null=True, blank=True)
+#     review_text = models.TextField(max_length=200)
+#     rating_stars = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+#     created_date = models.DateTimeField(auto_now_add=True)
+#
+#     def __str__(self):
+#         return f'{self.hotel} - {self.rating_stars}'
+
 class Reviews(models.Model):
     review_author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='review_connect_hotel', null=True, blank=True)
@@ -120,8 +130,21 @@ class Reviews(models.Model):
     rating_stars = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
     created_date = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = ('review_author', 'hotel')  # Гарантирует, что пользователь может оставить только один отзыв на отель
+
     def __str__(self):
         return f'{self.hotel} - {self.rating_stars}'
+
+# class Booking(models.Model):
+#     user_reservation = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+#     hotel_reservation = models.ForeignKey(Hotel, on_delete=models.CASCADE)
+#     apartment_reservation = models.ForeignKey(Apartment, on_delete=models.CASCADE)
+#     check_in_date = models.DateField()
+#     check_out_date = models.DateField()
+#
+#     def __str__(self):
+#         return f'{self.user_reservation}'
 
 class Booking(models.Model):
     user_reservation = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
@@ -132,3 +155,30 @@ class Booking(models.Model):
 
     def __str__(self):
         return f'{self.user_reservation}'
+
+    def save(self, *args, **kwargs):
+        # Проверка доступности номера
+        if self.apartment_reservation.is_free != 'available':
+            raise ValueError("Номер не доступен для бронирования.")
+
+        # Проверка уникальности дат
+        overlapping_bookings = Booking.objects.filter(
+            apartment_reservation=self.apartment_reservation,
+            check_in_date__lte=self.check_out_date,
+            check_out_date__gte=self.check_in_date
+        ).exclude(id=self.id)  # Исключаем текущее бронирование при обновлении
+
+        if overlapping_bookings.exists():
+            raise ValueError("Даты бронирования пересекаются с существующими бронированиями.")
+
+        # Обновление статуса номера на 'reserved' при создании бронирования
+        self.apartment_reservation.is_free = 'reserved'
+        self.apartment_reservation.save()
+
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        # При отмене бронирования меняем статус номера на 'available'
+        self.apartment_reservation.is_free = 'available'
+        self.apartment_reservation.save()
+        super().delete(*args, **kwargs)

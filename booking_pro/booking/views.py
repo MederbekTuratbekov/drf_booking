@@ -9,6 +9,7 @@ from rest_framework import status, generics, permissions, viewsets
 from .filters import ApartmentFilter, ChoiceCityFilter, HotelFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework import serializers
 
 
 class RegisterView(generics.CreateAPIView):
@@ -75,30 +76,85 @@ class ApartmentListAPIView(generics.RetrieveAPIView):
     search_fields = ['apartment_description', 'apartment_type', 'hotel_name__hotel_name']
     permissions = [permissions.AllowAny]
 
+# class ReviewsListAPIView(generics.CreateAPIView):
+#     queryset = Reviews.objects.all()
+#     serializer_class = ReviewsSerializers
+#     permissions = [permissions.IsAuthenticated]
+
 class ReviewsListAPIView(generics.CreateAPIView):
     queryset = Reviews.objects.all()
     serializer_class = ReviewsSerializers
-    permissions = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
 
-class ReviewsReadAPIView(generics.RetrieveAPIView):
+    def perform_create(self, serializer):
+        hotel = serializer.validated_data.get('hotel')
+        user = self.request.user
+
+        # Проверка, является ли пользователь владельцем отеля
+        if hotel and hotel.hotel_owner == user:
+            raise serializers.ValidationError("Владельцы отелей не могут оставлять отзывы на свои отели.")
+
+        # Проверка, оставлял ли пользователь уже отзыв на этот отель
+        if hotel and Reviews.objects.filter(review_author=user, hotel=hotel).exists():
+            raise serializers.ValidationError("Вы уже оставили отзыв на этот отель.")
+
+        serializer.save(review_author=user)
+
+# class ReviewsReadAPIView(generics.RetrieveAPIView):
+#     queryset = Reviews.objects.all()
+#     serializer_class = ReviewsReadSerializers
+#     permissions = [permissions.AllowAny]
+
+class ReviewsReadAPIView(generics.ListAPIView):  # Изменяем на ListAPIView, так как возвращаем список отзывов
     queryset = Reviews.objects.all()
     serializer_class = ReviewsReadSerializers
-    permissions = [permissions.AllowAny]
+    permission_classes = [permissions.AllowAny]
+
+    def get_queryset(self):
+        hotel_id = self.kwargs.get('pk')  # Получаем ID отеля из URL
+        return Reviews.objects.filter(hotel_id=hotel_id)  # Фильтруем отзывы по отелю
+
+# class BookingListAPIView(generics.CreateAPIView):
+#     queryset = Booking.objects.all()
+#     serializer_class = BookingSerializers
+#     permissions = [permissions.IsAuthenticated]
 
 class BookingListAPIView(generics.CreateAPIView):
     queryset = Booking.objects.all()
     serializer_class = BookingSerializers
-    permissions = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(user_reservation=self.request.user)
+
+class BookingCancelAPIView(generics.DestroyAPIView):
+    queryset = Booking.objects.all()
+    serializer_class = BookingSerializers
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        # Только пользователь, создавший бронирование, может его отменить
+        return Booking.objects.filter(user_reservation=self.request.user)
+
+    def perform_destroy(self, instance):
+        # Удаляем бронирование, что вызовет метод delete в модели Booking
+        instance.delete()
 
 class ManageHotelViewSet(viewsets.ModelViewSet):
     queryset = Hotel.objects.all()
     serializer_class = ManageHotelSerializers
-    permissions = [permissions.IsAdminUser]
+    permission_classes = [permissions.IsAdminUser]
+
+    def get_queryset(self):
+        return Hotel.objects.filter(hotel_owner=self.request.user)
 
 class ManageApartmentViewSet(viewsets.ModelViewSet):
     queryset = Apartment.objects.all()
     serializer_class = ManageApartmentSerializers
-    permissions = [permissions.IsAdminUser]
+    permission_classes = [permissions.IsAdminUser]
+
+    def get_queryset(self):
+        return Apartment.objects.filter(hotel_name__hotel_owner=self.request.user)
 
 # class CountryListAPIView(generics.ListAPIView):
 #     queryset = Country.objects.all()

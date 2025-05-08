@@ -59,10 +59,26 @@ class ChoiceCitySerializers(serializers.ModelSerializer):
         model = ChoiceCity
         fields = ('id', 'image_country', 'country', 'city')
 
+# class ReviewsSerializers(serializers.ModelSerializer):
+#     class Meta:
+#         model = Reviews
+#         fields = ('id', 'review_author', 'hotel', 'review_text', 'rating_stars', 'created_date')
+
 class ReviewsSerializers(serializers.ModelSerializer):
     class Meta:
         model = Reviews
         fields = ('id', 'review_author', 'hotel', 'review_text', 'rating_stars', 'created_date')
+
+    def validate(self, data):
+        request = self.context.get('request')
+        user = request.user
+        hotel = data.get('hotel')
+
+        if hotel and hotel.hotel_owner == user:
+            raise serializers.ValidationError("Владельцы отелей не могут оставлять отзывы на свои отели.")
+        if hotel and Reviews.objects.filter(review_author=user, hotel=hotel).exists():
+            raise serializers.ValidationError("Вы уже оставили отзыв на этот отель.")
+        return data
 
 class ReviewsReadSerializers(serializers.ModelSerializer):
     class Meta:
@@ -108,10 +124,48 @@ class ApartmentSerializers(serializers.ModelSerializer):
     def get_count_review(self, obj):
         return obj.get_count_review()
 
+# class BookingSerializers(serializers.ModelSerializer):
+#     class Meta:
+#         model = Booking
+#         fields = ('id', 'user_reservation', 'hotel_reservation', 'apartment_reservation', 'check_in_date', 'check_out_date')
+
 class BookingSerializers(serializers.ModelSerializer):
     class Meta:
         model = Booking
         fields = ('id', 'user_reservation', 'hotel_reservation', 'apartment_reservation', 'check_in_date', 'check_out_date')
+
+    def validate(self, data):
+        check_in_date = data.get('check_in_date')
+        check_out_date = data.get('check_out_date')
+        apartment = data.get('apartment_reservation')
+
+        # Проверка, что дата заезда раньше даты выезда
+        if check_in_date >= check_out_date:
+            raise serializers.ValidationError("Дата заезда должна быть раньше даты выезда.")
+
+        # Проверка статуса номера
+        if apartment.is_free != 'available':
+            raise serializers.ValidationError("Номер не доступен для бронирования.")
+
+        # Проверка пересечения дат
+        overlapping_bookings = Booking.objects.filter(
+            apartment_reservation=apartment,
+            check_in_date__lte=check_out_date,
+            check_out_date__gte=check_in_date
+        )
+
+        if overlapping_bookings.exists():
+            raise serializers.ValidationError("Даты бронирования пересекаются с существующими бронированиями.")
+
+        return data
+
+    def create(self, validated_data):
+        # Создание бронирования и установка user_reservation
+        booking = Booking.objects.create(
+            user_reservation=self.context['request'].user,
+            **validated_data
+        )
+        return booking
 
 class ManageHotelSerializers(serializers.ModelSerializer):
     class Meta:
@@ -132,5 +186,3 @@ class ManageApartmentSerializers(serializers.ModelSerializer):
 #     class Meta:
 #         model = City
 #         fields = '__all__'
-
-
