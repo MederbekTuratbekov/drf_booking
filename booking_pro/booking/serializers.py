@@ -46,6 +46,7 @@ class LoginSerializer(serializers.Serializer):
             'access': str(refresh.access_token),
             'refresh': str(refresh),
         }
+
 # -----------------------------------------------------------------
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -63,12 +64,18 @@ class ReviewsSerializers(serializers.ModelSerializer):
         model = Reviews
         fields = ['id', 'review_author', 'hotel', 'review_text', 'rating_stars', 'created_date']
 
+class HotelImagesSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = HotelImages
+        fields = ('hotel_image',)
+
 class HotelSerializers(serializers.ModelSerializer):
     get_avg_rating = serializers.SerializerMethodField()
     get_count_review = serializers.SerializerMethodField()
+    hotel_image = HotelImagesSerializers(source='images_connect_hotel', many=True, read_only=True)
     class Meta:
         model = Hotel
-        fields = ['id', 'hotel_name', 'hotel_address', 'hotel_description', 'get_avg_rating', 'get_count_review']
+        fields = ['id', 'hotel_name', 'hotel_address', 'hotel_description', 'get_avg_rating', 'get_count_review', 'hotel_image']
 
     def get_avg_rating(self, obj):
         return obj.get_avg_rating()
@@ -76,13 +83,19 @@ class HotelSerializers(serializers.ModelSerializer):
     def get_count_review(self, obj):
         return obj.get_count_review()
 
+class ApartmentImagesSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = ApartmentImages
+        fields = ('apartment_image',)
+
 class ApartmentSerializers(serializers.ModelSerializer):
     get_avg_rating = serializers.SerializerMethodField()
     get_count_review = serializers.SerializerMethodField()
+    apartment_image = ApartmentImagesSerializers(source='images_connect_apartment', many=True, read_only=True)
     class Meta:
         model = Apartment
-        fields = ['id', 'apartment_number', 'apartment_type', 'video_file', 'apartment_description', 'is_free', 'all_service', 'apartment_price', 'get_avg_rating', 'get_count_review']
-        # 'hotel_name', images, # country name, city name - для фильтра
+        fields = ['id', 'apartment_number', 'apartment_type', 'video_file', 'apartment_description', 'is_free', 'all_service',
+                  'apartment_price', 'get_avg_rating', 'get_count_review', 'apartment_image']
 
     def get_avg_rating(self, obj):
         return obj.get_avg_rating()
@@ -95,6 +108,16 @@ class BookingSerializers(serializers.ModelSerializer):
         model = Booking
         fields = ['id', 'user_reservation', 'hotel_reservation', 'apartment_reservation', 'check_in_date', 'check_out_date']
 
+class ManageHotelSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Hotel
+        fields = ['id', 'hotel_name', 'hotel_address', 'hotel_description', 'choice_city', 'hotel_owner']
+
+class ManageApartmentSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Apartment
+        fields = ['id', 'hotel_name', 'apartment_number', 'apartment_type', 'video_file', 'apartment_description', 'is_free', 'all_service', 'apartment_price']
+
 # class CountrySerializers(serializers.ModelSerializer):
 #     class Meta:
 #         model = Country
@@ -105,12 +128,4 @@ class BookingSerializers(serializers.ModelSerializer):
 #         model = City
 #         fields = '__all__'
 
-# class HotelImagesSerializers(serializers.ModelSerializer):
-#     class Meta:
-#         model = HotelImages
-#         fields = '__all__'
 
-# class ApartmentImagesSerializers(serializers.ModelSerializer):
-#     class Meta:
-#         model = ApartmentImages
-#         fields = '__all__'

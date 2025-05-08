@@ -1,11 +1,12 @@
 from .models import UserProfile, ChoiceCity, Hotel, Apartment, Reviews, Booking
-from .serializers import UserProfileSerializer, ChoiceCitySerializers, HotelSerializers, ApartmentSerializers, ReviewsSerializers, BookingSerializers, UserSerializer, LoginSerializer
+from .serializers import (UserProfileSerializer, ChoiceCitySerializers, HotelSerializers, ApartmentSerializers, ReviewsSerializers, BookingSerializers,
+                          UserSerializer, LoginSerializer, ManageHotelSerializers, ManageApartmentSerializers)
 #Country, City, HotelImages, ApartmentImages, CountrySerializers, CitySerializers, HotelImagesSerializers, ApartmentImagesSerializers
 from  rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework import status, generics, permissions
-from .filters import ApartmentFilter
+from rest_framework import status, generics, permissions, viewsets
+from .filters import ApartmentFilter, ChoiceCityFilter, HotelFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
 
@@ -53,10 +54,15 @@ class ChoiceCityListAPIView(generics.ListAPIView):
     queryset = ChoiceCity.objects.all()
     serializer_class = ChoiceCitySerializers
     permissions = [permissions.AllowAny]
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_class = ChoiceCityFilter
+    search_fields = ['country', 'city']
 
 class HotelListAPIView(generics.ListAPIView):
     queryset = Hotel.objects.all()
     serializer_class = HotelSerializers
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = HotelFilter
     permissions = [permissions.AllowAny]
 
 class ApartmentListAPIView(generics.RetrieveAPIView):
@@ -64,9 +70,9 @@ class ApartmentListAPIView(generics.RetrieveAPIView):
     serializer_class = ApartmentSerializers
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     filterset_class = ApartmentFilter
-    # ordering_fields = ['field_name1', 'field_name2']
-    # ordering = ['field_name1']
-    # search_fields = ['title', 'description']
+    ordering_fields = ['apartment_price', 'apartment_number']
+    ordering = ['apartment_price']
+    search_fields = ['apartment_description', 'apartment_type', 'hotel_name__hotel_name']
     permissions = [permissions.AllowAny]
 
 class ReviewsListAPIView(generics.CreateAPIView):
@@ -78,6 +84,16 @@ class BookingListAPIView(generics.CreateAPIView):
     queryset = Booking.objects.all()
     serializer_class = BookingSerializers
     permissions = [permissions.IsAuthenticated]
+
+class ManageHotelViewSet(viewsets.ModelViewSet):
+    queryset = Hotel.objects.all()
+    serializer_class = ManageHotelSerializers
+    permissions = [permissions.IsAdminUser]
+
+class ManageApartmentViewSet(viewsets.ModelViewSet):
+    queryset = Apartment.objects.all()
+    serializer_class = ManageApartmentSerializers
+    permissions = [permissions.IsAdminUser]
 
 # class CountryListAPIView(generics.ListAPIView):
 #     queryset = Country.objects.all()

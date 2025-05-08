@@ -11,7 +11,6 @@ class UserProfile(AbstractUser):
     account_created_date = models.DateField(auto_now_add=True)
     user_country = models.CharField(max_length=100)
     STATUS_CHOICES = (
-        ('admin', 'admin'),
         ('owner', 'owner'),
         ('guest', 'guest'),
     )
@@ -61,7 +60,7 @@ class Hotel(models.Model):
         return self.review_connect_hotel.count()
 
 class HotelImages(models.Model):
-    hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE)
+    hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='images_connect_hotel')
     hotel_image = models.ImageField(upload_to='hotel_images/', null=True, blank=True)
 
     def __str__(self):
@@ -69,9 +68,9 @@ class HotelImages(models.Model):
 
 class Apartment(models.Model):
     APARTMENT_STATUS = (
-        ('available', 'available'), # свободный
-        ('reserved', 'reserved'), # забронирован
-        ('occupied', 'occupied'), # занят
+        ('available', 'available'),  # свободный
+        ('reserved', 'reserved'),  # забронирован
+        ('occupied', 'occupied'),  # занят
     )
     APARTMENT_TYPE = (
         ('studio', 'studio'),  # Открытое пространство без перегородок
@@ -107,7 +106,7 @@ class Apartment(models.Model):
         return self.review_connect_apartment.count()
 
 class ApartmentImages(models.Model):
-    apartment = models.ForeignKey(Apartment, on_delete=models.CASCADE)
+    apartment = models.ForeignKey(Apartment, on_delete=models.CASCADE, related_name='images_connect_apartment')
     apartment_image = models.ImageField(upload_to='apartment_images/', null=True, blank=True)
 
     def __str__(self):
@@ -118,7 +117,7 @@ class Reviews(models.Model):
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='review_connect_hotel', null=True, blank=True)
     apartment = models.ForeignKey(Apartment, on_delete=models.CASCADE, related_name='review_connect_apartment', null=True, blank=True)
     review_text = models.TextField(max_length=200)
-    rating_stars = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 11)])
+    rating_stars = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
     created_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
