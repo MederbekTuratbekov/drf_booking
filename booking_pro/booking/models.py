@@ -33,6 +33,7 @@ class City(models.Model):
 
 class ChoiceCity(models.Model):
     image_country = models.FileField(upload_to='country_images/')
+    flag_country = models.ImageField(upload_to='country_flag/', null=True) # for review, for ChoiceCity page
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
     city = models.ForeignKey(City, on_delete=models.CASCADE)
 
@@ -45,6 +46,8 @@ class Hotel(models.Model):
     hotel_name = models.CharField(max_length=100)
     hotel_address = models.CharField(max_length=100, unique=True)
     hotel_description = models.TextField(max_length=500)
+    hotel_phone_number = PhoneNumberField(null=True)
+    rating_stars = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 11)], null=True)
 
     def __str__(self):
         return self.hotel_name
@@ -57,6 +60,14 @@ class Hotel(models.Model):
 
     def get_count_review(self):
         return self.review_connect_hotel.count()
+
+class HotelBonus(models.Model):
+    hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE)
+    icon_bonus = models.ImageField(upload_to='icon_bonuses')
+    name_bonus = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name_bonus
 
 class HotelImages(models.Model):
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='images_connect_hotel')
@@ -84,12 +95,12 @@ class Apartment(models.Model):
         ('residence', 'residence')  # Элитные апартаменты с гостиничным сервисом
     )
     hotel_name = models.ForeignKey(Hotel, on_delete=models.CASCADE)
-    apartment_number = models.PositiveSmallIntegerField()
+    apartment_number = models.IntegerField()
     apartment_type = models.CharField(choices=APARTMENT_TYPE)
     video_file = models.FileField(upload_to='apartment_videos/', null=True, blank=True)
     apartment_description = models.TextField(max_length=500)
+    all_service = models.BooleanField(default=True)  # привилегии
     is_free = models.CharField(choices=APARTMENT_STATUS, default='available')
-    all_service = models.BooleanField(default=True) # привилегии
     apartment_price = models.DecimalField(max_digits=7, decimal_places=2)
 
     def __str__(self):
@@ -111,23 +122,12 @@ class ApartmentImages(models.Model):
     def __str__(self):
         return f'{self.apartment}'
 
-# class Reviews(models.Model):
-#     review_author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-#     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='review_connect_hotel', null=True, blank=True)
-#     apartment = models.ForeignKey(Apartment, on_delete=models.CASCADE, related_name='review_connect_apartment', null=True, blank=True)
-#     review_text = models.TextField(max_length=200)
-#     rating_stars = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
-#     created_date = models.DateTimeField(auto_now_add=True)
-#
-#     def __str__(self):
-#         return f'{self.hotel} - {self.rating_stars}'
-
 class Reviews(models.Model):
     review_author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='review_connect_hotel', null=True, blank=True)
     apartment = models.ForeignKey(Apartment, on_delete=models.CASCADE, related_name='review_connect_apartment', null=True, blank=True)
-    review_text = models.TextField(max_length=200)
-    rating_stars = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    review_text = models.TextField(max_length=500)
+    rating_stars = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 11)])
     created_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -135,16 +135,6 @@ class Reviews(models.Model):
 
     def __str__(self):
         return f'{self.hotel} - {self.rating_stars}'
-
-# class Booking(models.Model):
-#     user_reservation = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-#     hotel_reservation = models.ForeignKey(Hotel, on_delete=models.CASCADE)
-#     apartment_reservation = models.ForeignKey(Apartment, on_delete=models.CASCADE)
-#     check_in_date = models.DateField()
-#     check_out_date = models.DateField()
-#
-#     def __str__(self):
-#         return f'{self.user_reservation}'
 
 class Booking(models.Model):
     user_reservation = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
@@ -182,3 +172,10 @@ class Booking(models.Model):
         self.apartment_reservation.is_free = 'available'
         self.apartment_reservation.save()
         super().delete(*args, **kwargs)
+
+class Favorite(models.Model):
+    user = models.OneToOneField(UserProfile, on_delete=models.CASCADE)
+
+class FavoriteItem(models.Model):
+    favorite = models.ForeignKey(Favorite, on_delete=models.CASCADE)
+    hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE)
