@@ -4,11 +4,12 @@ from .serializers import (UserProfileSerializer, ChoiceCitySerializers, HotelSer
 from  rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework import status, generics, permissions, viewsets
+from rest_framework import status, generics, permissions, viewsets, permissions
 from .filters import ApartmentFilter, ChoiceCityFilter, HotelFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework import serializers
+from .permissions import CheckRole, CheckUserRoleReviews
 
 
 class RegisterView(generics.CreateAPIView):
@@ -44,7 +45,6 @@ class LogoutView(generics.GenericAPIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 # ——————————————————————————
-
 class UserProfileListAPIView(generics.ListAPIView):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
@@ -63,7 +63,7 @@ class HotelListAPIView(generics.ListAPIView):
     serializer_class = HotelSerializers
     filter_backends = [DjangoFilterBackend]
     filterset_class = HotelFilter
-    permissions = [permissions.AllowAny]
+    permission_classes = [CheckRole]
 
 class ApartmentListAPIView(generics.RetrieveAPIView):
     queryset = Apartment.objects.all()
@@ -78,7 +78,7 @@ class ApartmentListAPIView(generics.RetrieveAPIView):
 class ReviewsListAPIView(generics.CreateAPIView):
     queryset = Reviews.objects.all()
     serializer_class = ReviewsSerializers
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, CheckUserRoleReviews]
 
     def perform_create(self, serializer):
         hotel = serializer.validated_data.get('hotel')
@@ -106,7 +106,7 @@ class ReviewsReadAPIView(generics.ListAPIView):
 class BookingListAPIView(generics.CreateAPIView):
     queryset = Booking.objects.all()
     serializer_class = BookingSerializers
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [CheckUserRoleReviews]
 
     def perform_create(self, serializer):
         serializer.save(user_reservation=self.request.user)
