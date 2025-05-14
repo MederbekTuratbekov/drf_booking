@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import UserProfile, Country, City, ChoiceCity, Hotel, HotelImages, Apartment, ApartmentImages, Reviews, Booking
+from .models import UserProfile, Country, City, ChoiceCity, Hotel, HotelImages, Apartment, ApartmentImages, Reviews, Booking, FavoriteItem
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 
@@ -58,11 +58,6 @@ class ChoiceCitySerializers(serializers.ModelSerializer):
     class Meta:
         model = ChoiceCity
         fields = ('id', 'image_country', 'country', 'city')
-
-# class ReviewsSerializers(serializers.ModelSerializer):
-#     class Meta:
-#         model = Reviews
-#         fields = ('id', 'review_author', 'hotel', 'review_text', 'rating_stars', 'created_date')
 
 class ReviewsSerializers(serializers.ModelSerializer):
     class Meta:
@@ -124,11 +119,6 @@ class ApartmentSerializers(serializers.ModelSerializer):
     def get_count_review(self, obj):
         return obj.get_count_review()
 
-# class BookingSerializers(serializers.ModelSerializer):
-#     class Meta:
-#         model = Booking
-#         fields = ('id', 'user_reservation', 'hotel_reservation', 'apartment_reservation', 'check_in_date', 'check_out_date')
-
 class BookingSerializers(serializers.ModelSerializer):
     class Meta:
         model = Booking
@@ -177,12 +167,7 @@ class ManageApartmentSerializers(serializers.ModelSerializer):
         model = Apartment
         fields = ('id', 'hotel_name', 'apartment_number', 'apartment_type', 'video_file', 'apartment_description', 'is_free', 'all_service', 'apartment_price')
 
-# class CountrySerializers(serializers.ModelSerializer):
-#     class Meta:
-#         model = Country
-#         fields = '__all__'
-
-# class CitySerializers(serializers.ModelSerializer):
-#     class Meta:
-#         model = City
-#         fields = '__all__'
+class FavoriteItemSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = FavoriteItem
+        fields = '__all__'

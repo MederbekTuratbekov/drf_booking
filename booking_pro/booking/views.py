@@ -1,7 +1,6 @@
-from .models import UserProfile, ChoiceCity, Hotel, Apartment, Reviews, Booking
+from .models import UserProfile, ChoiceCity, Hotel, Apartment, Reviews, Booking, FavoriteItem
 from .serializers import (UserProfileSerializer, ChoiceCitySerializers, HotelSerializers, ApartmentSerializers, ReviewsSerializers, BookingSerializers,
-                          UserSerializer, LoginSerializer, ManageHotelSerializers, ManageApartmentSerializers, ReviewsReadSerializers)
-#Country, City, HotelImages, ApartmentImages, CountrySerializers, CitySerializers, HotelImagesSerializers, ApartmentImagesSerializers
+                          UserSerializer, LoginSerializer, ManageHotelSerializers, ManageApartmentSerializers, ReviewsReadSerializers, FavoriteItemSerializers)
 from  rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -76,11 +75,6 @@ class ApartmentListAPIView(generics.RetrieveAPIView):
     search_fields = ['apartment_description', 'apartment_type', 'hotel_name__hotel_name']
     permissions = [permissions.AllowAny]
 
-# class ReviewsListAPIView(generics.CreateAPIView):
-#     queryset = Reviews.objects.all()
-#     serializer_class = ReviewsSerializers
-#     permissions = [permissions.IsAuthenticated]
-
 class ReviewsListAPIView(generics.CreateAPIView):
     queryset = Reviews.objects.all()
     serializer_class = ReviewsSerializers
@@ -100,12 +94,7 @@ class ReviewsListAPIView(generics.CreateAPIView):
 
         serializer.save(review_author=user)
 
-# class ReviewsReadAPIView(generics.RetrieveAPIView):
-#     queryset = Reviews.objects.all()
-#     serializer_class = ReviewsReadSerializers
-#     permissions = [permissions.AllowAny]
-
-class ReviewsReadAPIView(generics.ListAPIView):  # Изменяем на ListAPIView, так как возвращаем список отзывов
+class ReviewsReadAPIView(generics.ListAPIView):
     queryset = Reviews.objects.all()
     serializer_class = ReviewsReadSerializers
     permission_classes = [permissions.AllowAny]
@@ -113,11 +102,6 @@ class ReviewsReadAPIView(generics.ListAPIView):  # Изменяем на ListAPI
     def get_queryset(self):
         hotel_id = self.kwargs.get('pk')  # Получаем ID отеля из URL
         return Reviews.objects.filter(hotel_id=hotel_id)  # Фильтруем отзывы по отелю
-
-# class BookingListAPIView(generics.CreateAPIView):
-#     queryset = Booking.objects.all()
-#     serializer_class = BookingSerializers
-#     permissions = [permissions.IsAuthenticated]
 
 class BookingListAPIView(generics.CreateAPIView):
     queryset = Booking.objects.all()
@@ -156,18 +140,6 @@ class ManageApartmentViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return Apartment.objects.filter(hotel_name__hotel_owner=self.request.user)
 
-# class CountryListAPIView(generics.ListAPIView):
-#     queryset = Country.objects.all()
-#     serializer_class = CountrySerializers
-
-# class CityListAPIView(generics.ListAPIView):
-#     queryset = City.objects.all()
-#     serializer_class = CitySerializers
-
-# class HotelImagesListAPIView(generics.ListAPIView):
-#     queryset = HotelImages.objects.all()
-#     serializer_class = HotelImagesSerializers
-
-# class ApartmentImagesListAPIView(generics.ListAPIView):
-#     queryset = ApartmentImages.objects.all()
-#     serializer_class = ApartmentImagesSerializers
+class FavoriteItemAPIView(generics.ListAPIView):
+    queryset = FavoriteItem.objects.all()
+    serializer_class = FavoriteItemSerializers
