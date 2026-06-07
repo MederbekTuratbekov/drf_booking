@@ -7,12 +7,14 @@ class CheckRole(permissions.BasePermission):
             return True
         return obj.hotel_owner == request.user
 
+
 class CheckUserRoleReviews(permissions.BasePermission):
     def has_permission(self, request, view):
-        if request.user.role == 'owner':
+        if request.user.guest_status == 'owner':
             return False
         return True
 
+
 class CreatePermissions(permissions.BasePermission):
     def has_permission(self, request, view):
-        return request.user.role == 'guest'
+        return request.user.guest_status == 'guest'
