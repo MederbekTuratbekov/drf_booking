@@ -7,14 +7,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('booking', '0013_remove_userprofile_user_country'),
+        ('mysite', '0013_remove_userprofile_user_country'),
     ]
 
     operations = [
         migrations.AddField(
             model_name='userprofile',
             name='user_country',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='booking.country'),
+            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='mysite.country'),
             preserve_default=False,
         ),
     ]

@@ -7,23 +7,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('booking', '0010_alter_reviews_rating_stars'),
+        ('mysite', '0010_alter_reviews_rating_stars'),
     ]
 
     operations = [
         migrations.AlterField(
             model_name='apartmentimages',
             name='apartment',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='images_connect_apartment', to='booking.apartment'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='images_connect_apartment', to='mysite.apartment'),
         ),
         migrations.AlterField(
             model_name='hotelimages',
             name='hotel',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='images_connect_hotel', to='booking.hotel'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='images_connect_hotel', to='mysite.hotel'),
         ),
         migrations.AlterField(
             model_name='userprofile',
             name='user_country',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='booking.country'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mysite.country'),
         ),
     ]

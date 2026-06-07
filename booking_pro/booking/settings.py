@@ -20,7 +20,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'booking',
+    'mysite',
     'rest_framework',
     'phonenumber_field',
     'rest_framework_simplejwt',
@@ -46,7 +46,7 @@ MIDDLEWARE = [
     'allauth.account.middleware.AccountMiddleware',
 ]
 
-ROOT_URLCONF = 'booking_pro.urls'
+ROOT_URLCONF = 'booking.urls'
 
 TEMPLATES = [
     {
@@ -63,7 +63,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'booking_pro.wsgi.application'
+WSGI_APPLICATION = 'booking.wsgi.application'
 
 DATABASES = {
     'default': {
@@ -109,7 +109,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'booking.UserProfile'
+AUTH_USER_MODEL = 'mysite.UserProfile'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (

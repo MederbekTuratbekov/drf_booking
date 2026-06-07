@@ -7,18 +7,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('booking', '0007_alter_reviews_hotel'),
+        ('mysite', '0007_alter_reviews_hotel'),
     ]
 
     operations = [
         migrations.AddField(
             model_name='reviews',
             name='apartment',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='review_connect_apartment', to='booking.apartment'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='review_connect_apartment', to='mysite.apartment'),
         ),
         migrations.AlterField(
             model_name='reviews',
             name='hotel',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='review_connect_hotel', to='booking.hotel'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='review_connect_hotel', to='mysite.hotel'),
         ),
     ]

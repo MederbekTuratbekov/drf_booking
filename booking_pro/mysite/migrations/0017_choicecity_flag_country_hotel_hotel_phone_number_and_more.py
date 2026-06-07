@@ -9,7 +9,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('booking', '0016_alter_reviews_unique_together'),
+        ('mysite', '0016_alter_reviews_unique_together'),
     ]
 
     operations = [
@@ -69,8 +69,8 @@ class Migration(migrations.Migration):
             name='FavoriteItem',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('favorite', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='booking.favorite')),
-                ('hotel', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='booking.hotel')),
+                ('favorite', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mysite.favorite')),
+                ('hotel', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mysite.hotel')),
             ],
         ),
         migrations.CreateModel(
@@ -79,7 +79,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('icon_bonus', models.ImageField(upload_to='icon_bonuses')),
                 ('name_bonus', models.CharField(max_length=50)),
-                ('hotel', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='booking.hotel')),
+                ('hotel', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mysite.hotel')),
             ],
         ),
     ]

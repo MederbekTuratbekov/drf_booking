@@ -82,7 +82,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('apartment_image', models.ImageField(blank=True, null=True, upload_to='apartment_images/')),
-                ('apartment', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='booking.apartment')),
+                ('apartment', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mysite.apartment')),
             ],
         ),
         migrations.CreateModel(
@@ -90,7 +90,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('city_name', models.CharField(max_length=50, unique=True)),
-                ('country', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='booking.country')),
+                ('country', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mysite.country')),
             ],
         ),
         migrations.CreateModel(
@@ -98,8 +98,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('image_country', models.FileField(upload_to='country_images/')),
-                ('city', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='booking.city')),
-                ('country', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='booking.country')),
+                ('city', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mysite.city')),
+                ('country', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mysite.country')),
             ],
         ),
         migrations.CreateModel(
@@ -114,7 +114,7 @@ class Migration(migrations.Migration):
                 ('hotel_description_es', models.TextField(max_length=200, null=True)),
                 ('hotel_price', models.DecimalField(decimal_places=2, max_digits=7)),
                 ('hotel_stars', models.PositiveSmallIntegerField(choices=[(1, '1'), (2, '2'), (3, '3'), (4, '4'), (5, '5')])),
-                ('choice_city', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='booking.choicecity')),
+                ('choice_city', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mysite.choicecity')),
                 ('hotel_owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
@@ -124,22 +124,22 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('check_in_date', models.DateField()),
                 ('check_out_date', models.DateField()),
-                ('apartment_reservation', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='booking.apartment')),
+                ('apartment_reservation', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mysite.apartment')),
                 ('user_reservation', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-                ('hotel_reservation', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='booking.hotel')),
+                ('hotel_reservation', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mysite.hotel')),
             ],
         ),
         migrations.AddField(
             model_name='apartment',
             name='hotel',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='booking.hotel'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mysite.hotel'),
         ),
         migrations.CreateModel(
             name='HotelImages',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('hotel_image', models.ImageField(blank=True, null=True, upload_to='hotel_images/')),
-                ('hotel', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='booking.hotel')),
+                ('hotel', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mysite.hotel')),
             ],
         ),
         migrations.CreateModel(
@@ -152,7 +152,7 @@ class Migration(migrations.Migration):
                 ('review_text_es', models.TextField(max_length=200, null=True)),
                 ('rating_stars', models.PositiveSmallIntegerField(choices=[(1, '1'), (2, '2'), (3, '3'), (4, '4'), (5, '5'), (6, '6'), (7, '7'), (8, '8'), (9, '9'), (10, '10')])),
                 ('created_date', models.DateTimeField(auto_now_add=True)),
-                ('hotel', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='booking.hotel')),
+                ('hotel', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mysite.hotel')),
                 ('review_author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),

@@ -1,23 +1,16 @@
+from django.contrib import admin
 from django.urls import path, include
-from .views import UserProfileListAPIView, ChoiceCityListAPIView, HotelListAPIView, ApartmentListAPIView, ReviewsListAPIView, BookingListAPIView, FavoriteItemAPIView
-from .views import RegisterView, CustomLoginView, LogoutView, ManageHotelViewSet, ManageApartmentViewSet, ReviewsReadAPIView
-from .views import BookingCancelAPIView
+from django.conf.urls.i18n import i18n_patterns
+from django.conf import settings
+from django.conf.urls.static import static
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 
-urlpatterns = [
-    path('user/', UserProfileListAPIView.as_view(), name = 'users'),
-    path('', ChoiceCityListAPIView.as_view(), name = 'cities'),
-    path('hotel/', HotelListAPIView.as_view(), name = 'hotels'),
-    path('hotel/<int:pk>/', ApartmentListAPIView.as_view(), name = 'apartments'),
-    path('review/', ReviewsListAPIView.as_view(), name = 'reviews'),
-    path('review/<int:pk>', ReviewsReadAPIView.as_view(), name='read_reviews'),
-    path('booking/', BookingListAPIView.as_view(), name = 'bookings'),
-    path('manage_hotel/', ManageHotelViewSet.as_view({'get': 'list', 'post': 'create', 'delete': 'destroy', 'patch': 'update'}), name = 'manage_hotels'),
-    path('manage_apartment/', ManageApartmentViewSet.as_view({'get': 'list', 'post': 'create', 'delete': 'destroy', 'patch': 'update'}), name = 'manage_apartments'),
-    path('booking/<int:pk>/cancel/', BookingCancelAPIView.as_view(), name='cancel_booking'),
-    path('favorite/', FavoriteItemAPIView.as_view(), name='favorite'),
+urlpatterns = i18n_patterns(
+    path('admin/', admin.site.urls),
+    path('', include('mysite.urls')),
 
-    path('register/', RegisterView.as_view(), name = 'register'),
-    path('login/', CustomLoginView.as_view(), name = 'login'),
-    path('logout/', LogoutView.as_view(), name = 'logout'),
-]
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('accounts/', include('allauth.urls')),
+) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

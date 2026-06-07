@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('booking', '0002_alter_userprofile_user_age_and_more'),
+        ('mysite', '0002_alter_userprofile_user_age_and_more'),
     ]
 
     operations = [

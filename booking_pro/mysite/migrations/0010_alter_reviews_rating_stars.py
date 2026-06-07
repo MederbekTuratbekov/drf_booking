@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('booking', '0009_alter_userprofile_guest_status'),
+        ('mysite', '0009_alter_userprofile_guest_status'),
     ]
 
     operations = [
