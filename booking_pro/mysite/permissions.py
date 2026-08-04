@@ -18,3 +18,8 @@ class CheckUserRoleReviews(permissions.BasePermission):
 class CreatePermissions(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.user.guest_status == 'guest'
+
+
+class IsHotelOwner(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return bool(request.user and request.user.is_authenticated and request.user.guest_status == 'owner')
