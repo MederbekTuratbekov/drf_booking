@@ -151,8 +151,11 @@ class ManageApartmentViewSet(viewsets.ModelViewSet):
 
 
 class FavoriteItemAPIView(generics.ListAPIView):
-    queryset = FavoriteItem.objects.all()
     serializer_class = FavoriteItemSerializers
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return FavoriteItem.objects.filter(favorite__user=self.request.user)
 
 class BecomeOwnerAPIView(generics.UpdateAPIView):
     serializer_class = BecomeOwnerSerializer
