@@ -69,8 +69,7 @@ class HotelListAPIView(generics.ListAPIView):
     permission_classes = [CheckRole]
 
 
-class ApartmentListAPIView(generics.RetrieveAPIView):
-    queryset = Apartment.objects.all()
+class ApartmentListAPIView(generics.ListAPIView):
     serializer_class = ApartmentSerializers
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     filterset_class = ApartmentFilter
@@ -78,6 +77,10 @@ class ApartmentListAPIView(generics.RetrieveAPIView):
     ordering = ['apartment_price']
     search_fields = ['apartment_description', 'apartment_type', 'hotel_name__hotel_name']
     permission_classes = [permissions.AllowAny]
+
+    def get_queryset(self):
+        hotel_id = self.kwargs.get('pk')
+        return Apartment.objects.filter(hotel_name_id=hotel_id)
 
 
 class ReviewsListAPIView(generics.CreateAPIView):
