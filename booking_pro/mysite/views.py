@@ -59,7 +59,7 @@ class ChoiceCityListAPIView(generics.ListAPIView):
     permission_classes = [permissions.AllowAny]
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_class = ChoiceCityFilter
-    search_fields = ['country', 'city']
+    search_fields = ['country__country_name', 'city__city_name']
 
 
 class HotelListAPIView(generics.ListAPIView):
