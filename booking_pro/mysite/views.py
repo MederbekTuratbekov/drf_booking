@@ -10,7 +10,7 @@ from rest_framework import status, generics, permissions, viewsets, serializers
 from .filters import ApartmentFilter, ChoiceCityFilter, HotelFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
-from .permissions import CheckRole, CheckUserRoleReviews
+from .permissions import CheckRole, CheckUserRoleReviews, IsHotelOwner
 
 
 class RegisterView(generics.CreateAPIView):
@@ -134,7 +134,7 @@ class BookingCancelAPIView(generics.DestroyAPIView):
 class ManageHotelViewSet(viewsets.ModelViewSet):
     queryset = Hotel.objects.all()
     serializer_class = ManageHotelSerializers
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [IsHotelOwner]
 
     def get_queryset(self):
         return Hotel.objects.filter(hotel_owner=self.request.user)
@@ -143,7 +143,7 @@ class ManageHotelViewSet(viewsets.ModelViewSet):
 class ManageApartmentViewSet(viewsets.ModelViewSet):
     queryset = Apartment.objects.all()
     serializer_class = ManageApartmentSerializers
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [IsHotelOwner]
 
     def get_queryset(self):
         return Apartment.objects.filter(hotel_name__hotel_owner=self.request.user)
