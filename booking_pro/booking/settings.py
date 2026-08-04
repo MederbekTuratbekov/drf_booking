@@ -128,7 +128,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 5,
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny', # AllowAny / IsAuthenticated
+        'rest_framework.permissions.IsAuthenticated',
     ],
 }
 
