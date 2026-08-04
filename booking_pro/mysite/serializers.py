@@ -129,20 +129,19 @@ class BookingSerializers(serializers.ModelSerializer):
         check_out_date = data.get('check_out_date')
         apartment = data.get('apartment_reservation')
 
-        # Проверка, что дата заезда раньше даты выезда
         if check_in_date >= check_out_date:
             raise serializers.ValidationError("Дата заезда должна быть раньше даты выезда.")
 
-        # Проверка статуса номера
         if apartment.is_free != 'available':
             raise serializers.ValidationError("Номер не доступен для бронирования.")
 
-        # Проверка пересечения дат
         overlapping_bookings = Booking.objects.filter(
             apartment_reservation=apartment,
             check_in_date__lte=check_out_date,
             check_out_date__gte=check_in_date
         )
+        if self.instance:
+            overlapping_bookings = overlapping_bookings.exclude(id=self.instance.id)
 
         if overlapping_bookings.exists():
             raise serializers.ValidationError("Даты бронирования пересекаются с существующими бронированиями.")
@@ -150,7 +149,6 @@ class BookingSerializers(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        # Создание бронирования и установка user_reservation
         booking = Booking.objects.create(
             user_reservation=self.context['request'].user,
             **validated_data
