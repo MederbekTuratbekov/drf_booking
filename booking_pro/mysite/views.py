@@ -2,7 +2,8 @@ from .models import UserProfile, ChoiceCity, Hotel, Apartment, Reviews, Booking,
 from .serializers import (UserProfileSerializer, ChoiceCitySerializers, HotelSerializers,
                           ApartmentSerializers, ReviewsSerializers, BookingSerializers,
                           UserSerializer, LoginSerializer, ManageHotelSerializers,
-                          ManageApartmentSerializers, ReviewsReadSerializers, FavoriteItemSerializers)
+                          ManageApartmentSerializers, ReviewsReadSerializers, FavoriteItemSerializers,
+                          BecomeOwnerSerializer)
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -152,3 +153,17 @@ class ManageApartmentViewSet(viewsets.ModelViewSet):
 class FavoriteItemAPIView(generics.ListAPIView):
     queryset = FavoriteItem.objects.all()
     serializer_class = FavoriteItemSerializers
+
+class BecomeOwnerAPIView(generics.UpdateAPIView):
+    serializer_class = BecomeOwnerSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(UserProfileSerializer(instance).data)
