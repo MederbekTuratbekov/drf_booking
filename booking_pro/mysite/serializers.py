@@ -171,3 +171,16 @@ class FavoriteItemSerializers(serializers.ModelSerializer):
     class Meta:
         model = FavoriteItem
         fields = '__all__'
+
+class BecomeOwnerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ('guest_status',)
+        read_only_fields = ('guest_status',)
+
+    def update(self, instance, validated_data):
+        if instance.guest_status == 'owner':
+            raise serializers.ValidationError("Вы уже являетесь владельцем.")
+        instance.guest_status = 'owner'
+        instance.save()
+        return instance
