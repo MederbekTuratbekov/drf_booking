@@ -14,9 +14,9 @@ class HotelFilter(django_filters.FilterSet):
     class Meta:
         model = Hotel
         fields = {
-            'hotel_name': ['exact'],
-            'hotel_address': ['exact'],
-            'hotel_description': ['exact'],
+            'hotel_name': ['icontains'],
+            'hotel_address': ['icontains'],
+            'hotel_description': ['icontains'],
         }
 
 class ApartmentFilter(django_filters.FilterSet):
